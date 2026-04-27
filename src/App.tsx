@@ -1,9 +1,9 @@
-import './App.css'
-
 function App() {
 
   return (
-    <div>oi</div>
+<h1 className="text-4xl font-bold bg-red-500 text-white">
+  Tailwind is working
+</h1>
   )
 }
 
