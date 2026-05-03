@@ -7,7 +7,7 @@ export const flashcardService = {
 
   async getFlashcards(): Promise<Flashcard[]> {
     const response = await apiClient.get(API_CONFIG.ENDPOINTS.FLASHCARDS)
-    return response.data
+    return response.data.data
   },
 
   async getByDeck(
@@ -22,7 +22,6 @@ export const flashcardService = {
         per_page: perPage,
       },
     });
-    console.log(response.data);
     return response.data;
   },
 

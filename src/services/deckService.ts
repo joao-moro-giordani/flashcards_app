@@ -7,7 +7,7 @@ export const deckService = {
 
     async getDecks(): Promise<Deck[]> {
         const response = await apiClient.get(API_CONFIG.ENDPOINTS.DECKS)
-        return response.data
+        return response.data.data
     },
 
     async showDeck(id: number): Promise<Deck> {

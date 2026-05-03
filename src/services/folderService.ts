@@ -6,7 +6,7 @@ import apiClient from "./apiClient"
 export const folderService = {
   async getFolders(): Promise<Folder[]> {
     const response = await apiClient.get(API_CONFIG.ENDPOINTS.FOLDERS)
-    return response.data
+    return response.data.data
   },
 
   async showFolder(id: number): Promise<Folder> {

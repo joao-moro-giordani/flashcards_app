@@ -5,7 +5,7 @@ import apiClient from "./apiClient"
 export const languageService = {
   async getLanguages(): Promise<Language[]> {
     const response = await apiClient.get(API_CONFIG.ENDPOINTS.LANGUAGES)
-    return response.data
+    return response.data.data
   },
 
   async showLanguage(id: number): Promise<Language> {

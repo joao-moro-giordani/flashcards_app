@@ -5,9 +5,9 @@ export interface Folder {
 
     decks?: Deck[]
 
-    deleted_at: string | null
-    created_at: string
-    updated_at: string
+    deletedAt: string | null
+    createdAt: string
+    updatedAt: string
 }
 
 export interface Deck {
@@ -17,9 +17,9 @@ export interface Deck {
     name: string
     color: string
 
-    deleted_at: string | null
-    created_at: string
-    updated_at: string
+    deletedAt: string | null
+    createdAt: string
+    updatedAt: string
 }
 
 export interface Flashcard {
@@ -38,9 +38,9 @@ export interface Flashcard {
 //   type: 'word' | 'sentence'
 //   gender?: 'masculine' | 'feminine' | 'neutral'
 
-  deleted_at: string | null
-  created_at: string
-  updated_at: string
+  deletedAt: string | null
+  createdAt: string
+  updatedAt: string
 }
 
 export interface PaginatedFlashcards {
