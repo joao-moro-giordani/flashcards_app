@@ -1,32 +1,13 @@
-import { useEffect, useState } from "react";
 import FolderCard from "../components/folder/FolderCard";
 import PageHeader from "../components/layout/PageHeader";
 import BaseButton from "../components/ui/BaseButton";
 import { Loader } from "../components/ui/Loader";
-import type { Folder } from "../types";
-import { folderService } from "../services/folderService";
+import { useFolders } from "../hooks/useFolders";
 
 export const FoldersPage = () => {
-  const [folders, setFolders] = useState<Folder[]>([]);
-  const [loading, setLoading] = useState(true);
-  const [error, setError] = useState<string | null>(null);
+  const { data: folders = [], isLoading, isError, error } = useFolders();
 
-  useEffect(() => {
-    const fetchFolders = async () => {
-      try {
-        const data = await folderService.getFolders();
-        setFolders(data);
-      } catch (err) {
-        setError("Erro ao carregar pastas");
-      } finally {
-        setLoading(false);
-      }
-    };
-
-    fetchFolders();
-  }, []);
-
-  if (loading) {
+  if (isLoading) {
     return <Loader fullScreen />;
   }
 
@@ -41,8 +22,10 @@ export const FoldersPage = () => {
           </BaseButton>
         }
       />
-      {error && (
-        <p className="text-red-400 text-sm mb-4">{error}</p>
+      {isError && (
+        <p className="text-red-400 text-sm mb-4">
+          {error?.message ?? "Erro ao carregar pastas"}
+        </p>
       )}
       {folders.length === 0 ? (
         <p className="text-gray-400 text-sm">

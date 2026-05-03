@@ -1,5 +1,5 @@
 import API_CONFIG from "../config/api"
-import type { Flashcard } from "../types"
+import type { Flashcard, PaginatedFlashcards } from "../types"
 import type { FlashcardPayload } from "../types/payloadTypes"
 import apiClient from "./apiClient"
 
@@ -10,7 +10,11 @@ export const flashcardService = {
     return response.data
   },
 
-  async getByDeck(deckId: number, page = 1, perPage = 5) {
+  async getByDeck(
+    deckId: number,
+    page = 1,
+    perPage = 5,
+  ): Promise<PaginatedFlashcards> {
     const response = await apiClient.get("/flashcards", {
       params: {
         deck_id: deckId,
@@ -18,7 +22,7 @@ export const flashcardService = {
         per_page: perPage,
       },
     });
-
+    console.log(response.data);
     return response.data;
   },
 

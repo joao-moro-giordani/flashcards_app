@@ -1,49 +1,36 @@
-import { useEffect, useState } from "react";
 import PageHeader from "../components/layout/PageHeader";
 import BaseButton from "../components/ui/BaseButton";
 import { DeckCard } from "../components/deck/DeckCard";
 import { Loader } from "../components/ui/Loader";
 import { Plus, Folder as FolderIcon } from "lucide-react";
 import { useParams } from "react-router-dom";
-import { folderService } from "../services/folderService";
-import type { Folder } from "../types";
+import { useFolder } from "../hooks/useFolder";
 
 export const FolderDetailsPage = () => {
   const { id } = useParams();
+  const folderId = Number(id);
+  const hasValidId = Number.isFinite(folderId) && folderId > 0;
+  const { data: folder, isLoading, isError, error } = useFolder(
+    hasValidId ? folderId : undefined,
+  );
 
-  const [folder, setFolder] = useState<Folder | null>(null);
-  const [loading, setLoading] = useState(true);
-  const [error, setError] = useState<string | null>(null);
+  if (!hasValidId) {
+    return (
+      <div className="p-6 bg-black min-h-screen">
+        <p className="text-red-400 text-sm">ID inválido</p>
+      </div>
+    );
+  }
 
-  useEffect(() => {
-    const fetchFolder = async () => {
-      if (!id) {
-        setError("ID inválido");
-        setLoading(false);
-        return;
-      }
-      try {
-        const data = await folderService.showFolder(Number(id));
-        setFolder(data);
-      } catch (err) {
-        setError("Erro ao carregar pasta");
-      } finally {
-        setLoading(false);
-      }
-    };
-
-    fetchFolder();
-  }, [id]);
-
-  if (loading) {
+  if (isLoading) {
     return <Loader fullScreen />;
   }
 
-  if (error || !folder) {
+  if (isError || !folder) {
     return (
       <div className="p-6 bg-black min-h-screen">
         <p className="text-red-400 text-sm">
-          {error || "Pasta não encontrada"}
+          {error?.message || "Pasta não encontrada"}
         </p>
       </div>
     );

@@ -7,6 +7,7 @@ type Props = {
   onClick?: () => void;
   variant?: ButtonVariant;
   className?: string;
+  disabled?: boolean;
 };
 
 const variantStyles: Record<ButtonVariant, string> = {
@@ -21,15 +22,19 @@ const BaseButton: React.FC<Props> = ({
   onClick,
   variant = "primary",
   className = "",
+  disabled = false,
 }) => {
   return (
     <button
+      type="button"
       onClick={onClick}
+      disabled={disabled}
       className={`
         px-4 py-2 rounded-lg text-sm font-medium
         transition-colors duration-200
         ${variantStyles[variant]}
         ${className}
+        ${disabled ? "opacity-50 cursor-not-allowed" : ""}
       `}
     >
       {children}

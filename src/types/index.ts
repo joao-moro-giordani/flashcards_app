@@ -43,6 +43,12 @@ export interface Flashcard {
   updated_at: string
 }
 
+export interface PaginatedFlashcards {
+  data: Flashcard[]
+  current_page: number
+  last_page: number
+}
+
 export interface Language {
   id: number
   name: string
