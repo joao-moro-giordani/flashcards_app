@@ -4,6 +4,7 @@ const API_CONFIG = {
 
     ENDPOINTS: {
         LANGUAGES: '/languages',
+        FOLDERS: '/folders',
         DECKS: '/decks',
         FLASHCARDS: '/flashcards'
     }

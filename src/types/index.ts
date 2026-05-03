@@ -1,5 +1,19 @@
+export interface Folder {
+    id: number
+    name: string
+    color: string
+
+    decks?: Deck[]
+
+    deleted_at: string | null
+    created_at: string
+    updated_at: string
+}
+
 export interface Deck {
     id: number
+    folderId: number
+
     name: string
     color: string
 

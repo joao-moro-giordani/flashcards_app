@@ -4,9 +4,22 @@ import type { FlashcardPayload } from "../types/payloadTypes"
 import apiClient from "./apiClient"
 
 export const flashcardService = {
+
   async getFlashcards(): Promise<Flashcard[]> {
     const response = await apiClient.get(API_CONFIG.ENDPOINTS.FLASHCARDS)
     return response.data
+  },
+
+  async getByDeck(deckId: number, page = 1, perPage = 5) {
+    const response = await apiClient.get("/flashcards", {
+      params: {
+        deck_id: deckId,
+        page,
+        per_page: perPage,
+      },
+    });
+
+    return response.data;
   },
 
   async showFlashcard(id: number): Promise<Flashcard> {

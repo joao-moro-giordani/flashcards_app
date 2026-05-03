@@ -1,6 +1,12 @@
+export type FolderPayload = {
+    name: string
+    color: string
+}
+
 export type DeckPayload = {
     name: string
     color: string
+    folderId: number
 }
 
 export type FlashcardPayload = {

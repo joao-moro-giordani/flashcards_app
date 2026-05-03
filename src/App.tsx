@@ -1,10 +1,24 @@
-function App() {
+import { BrowserRouter, Routes, Route, Navigate } from "react-router-dom";
+import AppLayout from "./components/layout/AppLayout";
+import { FoldersPage } from "./pages/FoldersPage";
+import { DeckDetailsPage } from "./pages/DeckDetailsPage";
+import { FolderDetailsPage } from "./pages/FolderDetailsPage";
 
+
+function App() {
   return (
-    <h1 className="text-4xl font-bold bg-red-500 text-white">
-      Tailwind is working
-    </h1>
-  )
+    <BrowserRouter>
+      <Routes>
+        <Route element={<AppLayout />}>
+          <Route path="/" element={<Navigate to="/folders" />} />
+
+          <Route path="/folders" element={<FoldersPage />} />
+          <Route path="/folders/:id" element={<FolderDetailsPage />} />
+          <Route path="/decks/:id" element={<DeckDetailsPage />} />
+        </Route>
+      </Routes>
+    </BrowserRouter>
+  );
 }
 
-export default App
+export default App;
