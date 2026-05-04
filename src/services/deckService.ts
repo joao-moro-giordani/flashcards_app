@@ -14,7 +14,7 @@ export const deckService = {
         const response = await apiClient.get(
             `${API_CONFIG.ENDPOINTS.DECKS}/${id}`
         )
-        return response.data
+        return response.data.data
     },
 
     async storeDeck(payload: DeckPayload): Promise<Deck> {

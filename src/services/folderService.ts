@@ -13,7 +13,7 @@ export const folderService = {
     const response = await apiClient.get(
       `${API_CONFIG.ENDPOINTS.FOLDERS}/${id}`
     )
-    return response.data
+    return response.data.data
   },
 
   async storeFolder(payload: FolderPayload): Promise<Folder> {

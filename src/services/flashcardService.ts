@@ -29,7 +29,7 @@ export const flashcardService = {
     const response = await apiClient.get(
       `${API_CONFIG.ENDPOINTS.FLASHCARDS}/${id}`
     )
-    return response.data
+    return response.data.data
   },
 
   async storeFlashcard(payload: FlashcardPayload): Promise<Flashcard> {
