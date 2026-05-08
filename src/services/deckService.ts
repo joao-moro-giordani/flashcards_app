@@ -21,7 +21,7 @@ export const deckService = {
         const response = await apiClient.post(
             API_CONFIG.ENDPOINTS.DECKS, payload
         )
-        return response.data
+        return response.data.data
     },
 
     async updateDeck(id: number, payload: Partial<DeckPayload>): Promise<Deck> {
@@ -29,7 +29,7 @@ export const deckService = {
             `${API_CONFIG.ENDPOINTS.DECKS}/${id}`, 
             payload
         )
-        return response.data
+        return response.data.data
     },
 
     async deleteDeck(id: number): Promise<{ message: string }> {

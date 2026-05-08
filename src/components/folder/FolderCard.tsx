@@ -7,9 +7,11 @@ type Props = {
   id: number;
   name: string;
   color?: string;
+  onEdit?: (id: number) => void;
+  onDelete?: (id: number) => void;
 };
 
-const FolderCard: React.FC<Props> = ({ id, name, color }) => {
+const FolderCard: React.FC<Props> = ({ id, name, color, onEdit, onDelete }) => {
   const navigate = useNavigate();
   const [open, setOpen] = useState(false);
 
@@ -53,6 +55,10 @@ const FolderCard: React.FC<Props> = ({ id, name, color }) => {
 
         <Dropdown isOpen={open} onClose={() => setOpen(false)}>
           <button
+            onClick={() => {
+              onEdit?.(id);
+              setOpen(false);
+            }}
             className="
               flex items-center gap-2 w-full px-3 py-2 text-sm
               text-gray-200 hover:bg-gray-800
@@ -63,6 +69,10 @@ const FolderCard: React.FC<Props> = ({ id, name, color }) => {
           </button>
 
           <button
+            onClick={() => {
+              onDelete?.(id);
+              setOpen(false);
+            }}
             className="
               flex items-center gap-2 w-full px-3 py-2 text-sm
               text-red-400 hover:bg-gray-800

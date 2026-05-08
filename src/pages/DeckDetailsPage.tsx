@@ -1,16 +1,23 @@
 import { useMemo, useState } from 'react'
-import { useParams } from 'react-router-dom'
+import { useParams, useNavigate } from 'react-router-dom'
 import { Loader } from '../components/ui/Loader'
 import { FlashcardComponent } from '../components/ui/FlashcardComponent'
 import PageHeader from '../components/layout/PageHeader'
 import BaseButton from '../components/ui/BaseButton'
-import { Layers, ChevronLeft, ChevronRight } from 'lucide-react'
+import Modal from '../components/ui/Modal'
+import DeckWithFlashcardsForm from '../components/deck/DeckWithFlashcardsForm'
+import { Layers, ChevronLeft, ChevronRight, MoreVertical, Pencil, Trash } from 'lucide-react'
 import { useDeck } from '../hooks/useDeck'
 import { useDeckFlashcards } from '../hooks/useDeckFlashcards'
+import { useLanguages } from '../hooks/useLanguages'
+import { useDeleteDeck } from '../hooks/useDeckMutations'
+import { useCreateOrUpdateDeckWithFlashcards } from '../hooks/useDeckWithFlashcardsMutations'
+import Dropdown from '../components/ui/Dropdown'
 import type { Flashcard } from '../types'
 
 export const DeckDetailsPage = () => {
   const { id } = useParams()
+  const navigate = useNavigate()
   const deckId = Number(id)
   const hasValidId = Number.isFinite(deckId) && deckId > 0
 
@@ -31,12 +38,23 @@ export const DeckDetailsPage = () => {
     isFetchingNextPage,
   } = useDeckFlashcards(hasValidId ? deckId : undefined)
 
-  const flashcards = useMemo<Flashcard[]>(
-    () => flashcardPages?.pages.flatMap((page) => page.data) ?? [],
-    [flashcardPages],
-  )
+  const { data: languages = [] } = useLanguages()
+
+  const deleteDeckMutation = useDeleteDeck()
+  const updateDeckWithFlashcardsMutation = useCreateOrUpdateDeckWithFlashcards()
+
+const flashcards = useMemo<Flashcard[]>(
+  () => flashcardPages?.pages.flatMap((page) => page.data) ?? [],
+  [flashcardPages],
+)
+
+const totalFlashcards =
+  flashcardPages?.pages?.[0]?.meta?.total ?? 0
 
   const [currentIndex, setCurrentIndex] = useState(0)
+  const [isEditModalOpen, setIsEditModalOpen] = useState(false)
+  const [menuOpen, setMenuOpen] = useState(false)
+  const [confirmDeleteOpen, setConfirmDeleteOpen] = useState(false)
 
   const goToPrev = () => {
     setCurrentIndex((prev) =>
@@ -44,17 +62,52 @@ export const DeckDetailsPage = () => {
     )
   }
 
-  const goToNext = () => {
-    setCurrentIndex((prev) => {
-      if (prev < flashcards.length - 1) {
-        return prev + 1
-      } else {
-        if (hasNextPage && !isFetchingNextPage) {
-          fetchNextPage()
-        }
-        return 0
-      }
+const goToNext = async () => {
+  const isLastCard = currentIndex === flashcards.length - 1
+
+  if (isLastCard) {
+    if (hasNextPage && !isFetchingNextPage) {
+      await fetchNextPage()
+
+      setCurrentIndex((prev) => prev + 1)
+      return
+    }
+
+    setCurrentIndex(0)
+    return
+  }
+
+  setCurrentIndex((prev) => prev + 1)
+}
+
+  const handleUpdateDeckWithFlashcards = async (data: {
+    name: string
+    color: string
+    folderId: number
+    flashcards: any[]
+    deletedFlashcards: number[]
+  }) => {
+    await updateDeckWithFlashcardsMutation.mutateAsync({
+      deckId,
+      deck: {
+        name: data.name,
+        color: data.color,
+        folderId: data.folderId,
+      },
+      flashcards: data.flashcards,
+      deletedFlashcards: data.deletedFlashcards,
     })
+    setIsEditModalOpen(false)
+  }
+
+  const handleDeleteDeck = async () => {
+    if (!deck) return
+    await deleteDeckMutation.mutateAsync({
+      deckId,
+      folderId: deck.folderId,
+    })
+    const folderRoute = deck?.folderId ? `/folders/${deck.folderId}` : '/folders'
+    navigate(folderRoute)
   }
 
   if (!hasValidId) {
@@ -98,15 +151,37 @@ export const DeckDetailsPage = () => {
                 {deck.name}
               </h1>
               <p className="text-gray-400 text-xs">
-                {flashcards.length} flashcards
+                {totalFlashcards} flashcards
               </p>
             </div>
           </div>
         }
         actions={
-          <BaseButton onClick={() => {}}>
-            Adicionar Flashcard
-          </BaseButton>
+          <div className="flex items-center gap-2">
+            <BaseButton variant="ghost" onClick={() => setIsEditModalOpen(true)}>
+              <Pencil size={16} />
+            </BaseButton>
+            <div className="relative">
+              <button
+                onClick={() => setMenuOpen((prev) => !prev)}
+                className="p-2 text-gray-400 hover:text-white hover:bg-gray-700 rounded transition"
+              >
+                <MoreVertical size={18} />
+              </button>
+              <Dropdown isOpen={menuOpen} onClose={() => setMenuOpen(false)}>
+                <button
+                  onClick={() => {
+                    setConfirmDeleteOpen(true)
+                    setMenuOpen(false)
+                  }}
+                  className="flex items-center gap-2 w-full px-3 py-2 text-sm text-red-400 hover:bg-gray-800"
+                >
+                  <Trash size={14} />
+                  Deletar Deck
+                </button>
+              </Dropdown>
+            </div>
+          </div>
         }
       />
 
@@ -142,9 +217,57 @@ export const DeckDetailsPage = () => {
           </div>
 
           <div className="text-center mt-4 text-gray-400 text-sm">
-            {currentIndex + 1} / {flashcards.length}
+            {currentIndex + 1} / {totalFlashcards}
           </div>
         </div>
+      )}
+
+      {/* Modal de Editar Deck com Flashcards */}
+      <Modal
+        isOpen={isEditModalOpen}
+        onClose={() => setIsEditModalOpen(false)}
+        title="Editar Deck e Flashcards"
+        size="lg"
+      >
+        <DeckWithFlashcardsForm
+          deck={deck}
+          folderId={deckFolderId}
+          languages={languages}
+          flashcards={flashcards}
+          onSubmit={handleUpdateDeckWithFlashcards}
+          isLoading={updateDeckWithFlashcardsMutation.isPending}
+        />
+      </Modal>
+
+      {/* Modal de Confirmação de Exclusão */}
+      {confirmDeleteOpen && (
+        <Modal
+          isOpen={true}
+          onClose={() => setConfirmDeleteOpen(false)}
+          title="Confirmar Exclusão"
+          size="sm"
+        >
+          <div>
+            <p className="text-gray-300 mb-6">
+              Tem certeza que deseja deletar este deck? Todos os flashcards serão removidos.
+            </p>
+            <div className="flex gap-2 justify-end">
+              <BaseButton
+                variant="ghost"
+                onClick={() => setConfirmDeleteOpen(false)}
+              >
+                Cancelar
+              </BaseButton>
+              <BaseButton
+                variant="danger"
+                onClick={handleDeleteDeck}
+                disabled={deleteDeckMutation.isPending}
+              >
+                {deleteDeckMutation.isPending ? "Deletando..." : "Deletar"}
+              </BaseButton>
+            </div>
+          </div>
+        </Modal>
       )}
 
       {/* Space for future buttons */}

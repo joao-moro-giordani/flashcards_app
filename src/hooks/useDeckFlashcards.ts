@@ -11,7 +11,7 @@ export const useDeckFlashcards = (deckId?: number) => {
     [string, number | undefined],
     number
   >({
-    queryKey: ["deckFlashcards", deckId],
+    queryKey: ["deck-flashcards", deckId],
     queryFn: ({ pageParam = 1 }) => {
       if (deckId === undefined) {
         throw new Error("ID inválido")
@@ -21,11 +21,13 @@ export const useDeckFlashcards = (deckId?: number) => {
     enabled: deckId !== undefined,
     initialPageParam: 1,
     getNextPageParam: (lastPage) => {
-      if (lastPage.current_page < lastPage.last_page) {
-        return lastPage.current_page + 1
-      }
-      return undefined
-    },
+      const currentPage = lastPage.meta.current_page
+      const lastPageNumber = lastPage.meta.last_page
+
+      return currentPage < lastPageNumber
+        ? currentPage + 1
+        : undefined
+},
     staleTime: 1000 * 60,
     retry: 1,
   })

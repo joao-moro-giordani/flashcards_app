@@ -37,6 +37,6 @@ export const folderService = {
     const response = await apiClient.delete(
       `${API_CONFIG.ENDPOINTS.FOLDERS}/${id}`
     )
-    return response.data
+    return response.data.data
   }
 }

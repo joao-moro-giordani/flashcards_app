@@ -45,8 +45,23 @@ export interface Flashcard {
 
 export interface PaginatedFlashcards {
   data: Flashcard[]
-  current_page: number
-  last_page: number
+
+  links: {
+    first: string | null
+    last: string | null
+    prev: string | null
+    next: string | null
+  }
+
+  meta: {
+    current_page: number
+    last_page: number
+    from: number
+    path: string
+    per_page: number
+    to: number
+    total: number
+  }
 }
 
 export interface Language {

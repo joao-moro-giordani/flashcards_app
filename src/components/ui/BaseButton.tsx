@@ -8,6 +8,7 @@ type Props = {
   variant?: ButtonVariant;
   className?: string;
   disabled?: boolean;
+  type?: "button" | "submit" | "reset";
 };
 
 const variantStyles: Record<ButtonVariant, string> = {
@@ -23,10 +24,11 @@ const BaseButton: React.FC<Props> = ({
   variant = "primary",
   className = "",
   disabled = false,
+  type = "button",
 }) => {
   return (
     <button
-      type="button"
+      type={type}
       onClick={onClick}
       disabled={disabled}
       className={`

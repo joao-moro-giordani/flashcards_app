@@ -7,21 +7,13 @@ type Props = {
   id: number;
   name: string;
   color?: string;
+  onEdit?: (id: number) => void;
+  onDelete?: (id: number) => void;
 };
 
-export const DeckCard: React.FC<Props> = ({ id, name, color }) => {
+export const DeckCard: React.FC<Props> = ({ id, name, color, onEdit, onDelete }) => {
   const navigate = useNavigate();
   const [open, setOpen] = useState(false);
-
-  const handleEdit = () => {
-    console.log("edit", id);
-    setOpen(false);
-  };
-
-  const handleDelete = () => {
-    console.log("delete", id);
-    setOpen(false);
-  };
 
   return (
     <div
@@ -62,7 +54,10 @@ export const DeckCard: React.FC<Props> = ({ id, name, color }) => {
 
         <Dropdown isOpen={open} onClose={() => setOpen(false)}>
           <button
-            onClick={handleEdit}
+            onClick={() => {
+              onEdit?.(id);
+              setOpen(false);
+            }}
             className="flex items-center gap-2 w-full px-3 py-2 text-sm text-gray-300 hover:bg-gray-800"
           >
             <Pencil size={14} />
@@ -70,7 +65,10 @@ export const DeckCard: React.FC<Props> = ({ id, name, color }) => {
           </button>
 
           <button
-            onClick={handleDelete}
+            onClick={() => {
+              onDelete?.(id);
+              setOpen(false);
+            }}
             className="flex items-center gap-2 w-full px-3 py-2 text-sm text-red-400 hover:bg-gray-800"
           >
             <Trash2 size={14} />

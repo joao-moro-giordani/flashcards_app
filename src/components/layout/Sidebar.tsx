@@ -1,5 +1,5 @@
+import { Folder } from "lucide-react";
 import { useNavigate, useLocation } from "react-router-dom";
-import BaseButton from "../ui/BaseButton";
 
 const Sidebar = () => {
   const navigate = useNavigate();
@@ -34,22 +34,9 @@ const Sidebar = () => {
               }
             `}
           >
-            📚 Pastas   
+          <div className="ml-1 inline-block">Pastas</div>   
           </button>
         </div>
-      </div>
-
-      {/* Bottom Section */}
-      <div>
-        <BaseButton
-          className="w-full"
-          onClick={() => {
-            // later: open modal
-            console.log("Add Folder");
-          }}
-        >
-          + Nova Pasta
-        </BaseButton>
       </div>
     </aside>
   );
