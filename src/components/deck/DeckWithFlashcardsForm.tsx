@@ -1,10 +1,9 @@
-import React, { useState, useEffect } from "react";
-import BaseInput from "../ui/BaseInput";
-import BaseButton from "../ui/BaseButton";
-import ColorPicker from "../ui/ColorPicker";
-import { Trash, Plus } from "lucide-react";
+import { Plus, Trash } from "lucide-react";
+import React, { useEffect, useState } from "react";
 import type { Deck, Flashcard, Language } from "../../types";
-import { useNavigate } from "react-router-dom";
+import BaseButton from "../ui/BaseButton";
+import BaseInput from "../ui/BaseInput";
+import ColorPicker from "../ui/ColorPicker";
 
 type FlashcardFormData = Omit<Flashcard, "id" | "deckId" | "deletedAt" | "createdAt" | "updatedAt"> & {
     tempId?: string;
@@ -38,7 +37,6 @@ const DeckWithFlashcardsForm: React.FC<Props> = ({
     const [flashcards, setFlashcards] = useState<(FlashcardFormData & { id?: number })[]>([]);
     const [deletedFlashcards, setDeletedFlashcards] = useState<number[]>([]);
     const [error, setError] = useState("");
-    const navigate = useNavigate();
 
     useEffect(() => {
         if (deck) {
